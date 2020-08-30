@@ -8,18 +8,19 @@ from utilities import determineMood, printResults
 #from json.decoder import JSONDecoderError
 
 #Get username from terminal
-username = "safari.will"
-client_id = "156004f3993643e9994292b6c8cd86ff"
-client_secret = "f4962a3328c849a48cf8cb8f9ede7113"
+username = "blank"
+client_id = "blank"
+client_secret = "blank"
 redirect_uri = "https://www.google.com/"
 scope = 'playlist-read-private user-library-read'
 
 #Erase cache and prompt for user permission
-try:
-    token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
-except:
-    os.remove(f".cache-{username}")
-    token = util.prompt_for_user_token(username)
+token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
+# try:
+#     token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
+# except:
+#     os.remove(f".cache-{username}")
+#     token = util.prompt_for_user_token(username)
 
 #Create our spotifyObject
 spotifyObject = spotipy.Spotify(auth=token)
