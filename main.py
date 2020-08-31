@@ -1,8 +1,8 @@
 from flask import Flask, redirect, url_for, render_template, request
 from functions import createObj, playlistIDs, albumIDs, songID, findNums, determineMood
 
-global client_id = "156004f3993643e9994292b6c8cd86ff"
-global client_secret = "f4962a3328c849a48cf8cb8f9ede7113"
+global client_id = "blank"
+global client_secret = "blank"
 global redirect_uri = "https://www.google.com/"
 global scope = 'playlist-read-private user-library-read'
 
