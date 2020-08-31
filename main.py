@@ -14,28 +14,40 @@ scope = 'playlist-read-private user-library-read'
 app = Flask(__name__)
 
 @app.route("/", methods=["POST", "GET"])
-def home():
+def home(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, scope=scope):
     if request.method == "POST":
         user = request.form["username"]
-        token = util.prompt_for_user_token(user, scope, client_id, client_secret, redirect_uri)
-        obj = createObj(token)
+
         searchType = request.form["searchType"]
-        return redirect(url_for("search", searchT=searchType, spotifyObj=obj))
+
+        return redirect(url_for("search", searchT=searchType, user=user))
     else:
         return render_template("home.html")
+    
+    #return redirect(url_for("search", searchT=searchType, spotifyObj=obj))
 
-searchT = ""
-@app.route("/<searchT>", methods=["POST", "GET"])
-def search(searchT,spotifyObj):
+
+@app.route("/<searchT>/<user>", methods=["POST", "GET"])
+def search(searchT, user):
+
+    token = util.prompt_for_user_token(user, scope, client_id, client_secret, redirect_uri)
+    spotifyObj = createObj(token)
+
     if searchT == "playlist":
         if request.method == "POST":
             searchName = request.form["playlist"]
+            tracks = playlistIDs(searchName, spotifyObj)
+            energy, valence = findNums(tracks, spotifyObj)
+            mood = determineMood(energy, valence)
+
+            return redirect(url_for("results", searchT=searchT, searchName=searchName, energy=energy, valence=valence, mood=mood))
         else:
             return render_template("playlistsearch.html")
     elif searchT == "album":
         if request.method == "POST":
             searchName = request.form["album"]
             artist = request.form["artist"]
+            tracks = albumIDs(searchName, artist, spotifyObj)
         else:
             return render_template("albumsearch.html")
     elif searchT == "song":
@@ -43,10 +55,20 @@ def search(searchT,spotifyObj):
             searchName = request.form["song"]
             album = request.form["album"]
             artist = request.form["artist"]
+            tracks = songID(searchName, album, artist, spotifyObj)
         else:
             return render_template("songsearch.html")
 
-    
+    # energy, valence = findNums(tracks, spotifyObj)
+    # mood = determineMood(energy, valence)
+
+    # return redirect(url_for("results", searchT=searchT, searchName=searchName, energy=energy, valence=valence, mood=mood))
+ 
+@app.route("/<searchT>/<searchName>/<energy>/<valence>/<mood>")
+def results(searchT, searchName, energy, valence, mood):
+    return render_template("results.html", type=searchT, name=searchName, energy=energy, valence=valence, mood=mood)
+
+
 
 if __name__ == "__main__":
     app.run()
