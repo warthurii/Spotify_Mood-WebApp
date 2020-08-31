@@ -1,10 +1,15 @@
 from flask import Flask, redirect, url_for, render_template, request
+
+import sys
+import spotipy
+import spotipy.util as util
+
 from functions import createObj, playlistIDs, albumIDs, songID, findNums, determineMood
 
-global client_id = "blank"
-global client_secret = "blank"
-global redirect_uri = "https://www.google.com/"
-global scope = 'playlist-read-private user-library-read'
+client_id = "blank"
+client_secret = "blank"
+redirect_uri = "https://www.google.com/"
+scope = 'playlist-read-private user-library-read'
 
 app = Flask(__name__)
 
@@ -12,7 +17,7 @@ app = Flask(__name__)
 def home():
     if request.method == "POST":
         user = request.form["username"]
-        token = util.prompt_for_user_token(username, scope, client_id, client_secret, redirect_uri)
+        token = util.prompt_for_user_token(user, scope, client_id, client_secret, redirect_uri)
         obj = createObj(token)
         searchType = request.form["searchType"]
         return redirect(url_for("search", searchT=searchType, spotifyObj=obj))
