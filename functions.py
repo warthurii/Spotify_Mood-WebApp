@@ -21,7 +21,6 @@ def playlistIDs(searchQuery, spotifyObject):
     return trackIDs
     
 def albumIDs(searchQuery, artist, spotifyObject):
-    artist = input("Artist Name: ")
     searchResults = spotifyObject.search(q="artist:" + artist + " album:" + searchQuery, type="album")
     albumID = searchResults['albums']['items'][0]['id']
     trackIDsJSON = spotifyObject.album_tracks(albumID)
@@ -32,8 +31,6 @@ def albumIDs(searchQuery, artist, spotifyObject):
 
 def songID(searchQuery, album, artist, spotifyObject):
     trackIDs = []
-    artist = input("Artist Name: ")
-    album = input("Album Name: ")
     searchResults = spotifyObject.search(q="artist:" + artist + " album:" + album + " track:" + searchQuery, limit=1, type="track")
     print(json.dumps(searchResults, sort_keys=True, indent=4))
     track = searchResults['tracks']['items'][0]

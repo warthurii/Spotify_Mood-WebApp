@@ -6,8 +6,8 @@ import spotipy.util as util
 
 from functions import createObj, playlistIDs, albumIDs, songID, findNums, determineMood
 
-client_id = "blank"
-client_secret = "blank"
+client_id = "156004f3993643e9994292b6c8cd86ff"
+client_secret = "f4962a3328c849a48cf8cb8f9ede7113"
 redirect_uri = "https://www.google.com/"
 scope = 'playlist-read-private user-library-read'
 
@@ -29,7 +29,6 @@ def home(client_id=client_id, client_secret=client_secret, redirect_uri=redirect
 
 @app.route("/<searchT>/<user>", methods=["POST", "GET"])
 def search(searchT, user):
-
     token = util.prompt_for_user_token(user, scope, client_id, client_secret, redirect_uri)
     spotifyObj = createObj(token)
 
@@ -48,6 +47,10 @@ def search(searchT, user):
             searchName = request.form["album"]
             artist = request.form["artist"]
             tracks = albumIDs(searchName, artist, spotifyObj)
+            energy, valence = findNums(tracks, spotifyObj)
+            mood = determineMood(energy, valence)
+
+            return redirect(url_for("results", searchT=searchT, searchName=searchName, energy=energy, valence=valence, mood=mood))
         else:
             return render_template("albumsearch.html")
     elif searchT == "song":
@@ -56,6 +59,10 @@ def search(searchT, user):
             album = request.form["album"]
             artist = request.form["artist"]
             tracks = songID(searchName, album, artist, spotifyObj)
+            energy, valence = findNums(tracks, spotifyObj)
+            mood = determineMood(energy, valence)
+
+            return redirect(url_for("results", searchT=searchT, searchName=searchName, energy=energy, valence=valence, mood=mood))
         else:
             return render_template("songsearch.html")
 
