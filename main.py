@@ -6,8 +6,8 @@ import spotipy.util as util
 
 from functions import createObj, playlistIDs, albumIDs, songID, findNums, determineMood
 
-client_id = "156004f3993643e9994292b6c8cd86ff"
-client_secret = "f4962a3328c849a48cf8cb8f9ede7113"
+client_id = ""
+client_secret = ""
 redirect_uri = "https://www.google.com/"
 scope = 'playlist-read-private user-library-read'
 
